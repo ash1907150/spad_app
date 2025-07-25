@@ -74,22 +74,11 @@ def extract_features_from_np(image_np):
 # Streamlit UI
 # ================================
 st.set_page_config(page_title="Rice Leaf SPAD Value Predictor", page_icon="🌾")
-
-# App title with HSTU logo
-st.markdown(
-    """
-    <h1 style='display: flex; align-items: center; gap: 10px;'>
-        🌾 Rice Leaf SPAD Value Predictor
-        <img src='https://www.hstu.ac.bd/assets/images/logo.png' width='60' style='margin-bottom:0px;'/>
-    </h1>
-    """,
-    unsafe_allow_html=True
-)
+st.title("🌾 Rice Leaf SPAD Value Predictor")
 
 st.markdown(
     """
     Welcome to the **Rice Leaf SPAD Value Predictor**!  
-    Upload a clear image of a rice leaf (preferably on a plain background).  
     The app will automatically remove the background and predict the SPAD value, which is an indicator of leaf chlorophyll content and plant health.
     """
 )
@@ -158,5 +147,3 @@ if uploaded_file is not None:
     st.caption("For best results, use clear, well-lit images of single rice leaves.")
 else:
     st.warning("Please upload or capture a rice leaf image to get a SPAD prediction.")
-
-
