@@ -1,0 +1,7 @@
+numpy<2
+streamlit
+rembg
+onnxruntime
+pillow
+opencv-python
+scikit-learn
