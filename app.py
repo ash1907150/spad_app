@@ -74,7 +74,17 @@ def extract_features_from_np(image_np):
 # Streamlit UI
 # ================================
 st.set_page_config(page_title="Rice Leaf SPAD Value Predictor", page_icon="🌾")
-st.title("🌾 Rice Leaf SPAD Value Predictor")
+
+# App title with HSTU logo
+st.markdown(
+    """
+    <h1 style='display: flex; align-items: center; gap: 10px;'>
+        🌾 Rice Leaf SPAD Value Predictor
+        <img src='https://www.hstu.ac.bd/assets/images/logo.png' width='60' style='margin-bottom:0px;'/>
+    </h1>
+    """,
+    unsafe_allow_html=True
+)
 
 st.markdown(
     """
@@ -83,6 +93,13 @@ st.markdown(
     The app will automatically remove the background and predict the SPAD value, which is an indicator of leaf chlorophyll content and plant health.
     """
 )
+
+st.markdown("""
+### How to use:
+1. **Upload or capture** a clear photo of a single rice leaf.
+2. **Wait** for the app to process your image.
+3. **Read your SPAD value and advice** for your crop.
+""")
 
 with st.expander("ℹ️ About SPAD Value in Rice"):
     st.write(
@@ -96,10 +113,25 @@ with st.expander("ℹ️ About SPAD Value in Rice"):
         """
     )
 
-uploaded_file = st.file_uploader(
-    "📷 Upload a rice leaf image (PNG, JPG, JPEG)", 
-    type=["png", "jpg", "jpeg"]
-)
+# --- Two icon buttons for upload/capture ---
+col1, col2 = st.columns(2)
+with col1:
+    upload_clicked = st.button("📁 Upload Image")
+with col2:
+    capture_clicked = st.button("📷 Capture Image")
+
+uploaded_file = None
+
+if upload_clicked:
+    uploaded_file = st.file_uploader(
+        "Upload a rice leaf image (PNG, JPG, JPEG)", 
+        type=["png", "jpg", "jpeg"],
+        key="upload"
+    )
+elif capture_clicked:
+    camera_image = st.camera_input("Capture a rice leaf image", key="capture")
+    if camera_image is not None:
+        uploaded_file = camera_image
 
 if uploaded_file is not None:
     with st.spinner("Processing image and predicting SPAD value..."):
@@ -111,22 +143,20 @@ if uploaded_file is not None:
         features = extract_features_from_np(image_np)
         predicted_spad = model.predict(features)[0]
 
-    # Show result with interpretation
     st.success(f"🌱 **Predicted SPAD Value:** `{predicted_spad:.2f}`")
 
-    # Give interpretation based on value
     if predicted_spad < 30:
-        st.error("🔴 Low SPAD value: Possible nitrogen deficiency. Leaves may be pale or yellowish.")
+        st.error("❌ Low SPAD value: Your leaf may lack nitrogen. Consider fertilizer.")
     elif predicted_spad < 40:
-        st.warning("🟡 Moderate SPAD value: Generally healthy, but may benefit from more nitrogen.")
+        st.warning("⚠️ Moderate SPAD value: Leaf is okay, but could benefit from more nitrogen.")
     else:
-        st.info("🟢 High SPAD value: Leaf is healthy and well-nourished.")
+        st.success("✅ High SPAD value: Your rice leaf is healthy!")
 
     with st.expander("Show uploaded image"):
         st.image(uploaded_file, caption="Original uploaded image", use_column_width=True)
 
     st.caption("For best results, use clear, well-lit images of single rice leaves.")
 else:
-    st.warning("Please upload a rice leaf image to get a SPAD prediction.")
+    st.warning("Please upload or capture a rice leaf image to get a SPAD prediction.")
 
 
