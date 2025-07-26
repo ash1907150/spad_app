@@ -102,25 +102,12 @@ with st.expander("ℹ️ About SPAD Value in Rice"):
         """
     )
 
-# --- Two icon buttons for upload/capture ---
-col1, col2 = st.columns(2)
-with col1:
-    upload_clicked = st.button("📁 Upload Image")
-with col2:
-    capture_clicked = st.button("📷 Capture Image")
-
-uploaded_file = None
-
-if upload_clicked:
-    uploaded_file = st.file_uploader(
-        "Upload a rice leaf image (PNG, JPG, JPEG)", 
-        type=["png", "jpg", "jpeg"],
-        key="upload"
-    )
-elif capture_clicked:
-    camera_image = st.camera_input("Capture a rice leaf image", key="capture")
-    if camera_image is not None:
-        uploaded_file = camera_image
+# --- Only upload option ---
+uploaded_file = st.file_uploader(
+    "📁 Upload a rice leaf image (PNG, JPG, JPEG)", 
+    type=["png", "jpg", "jpeg"],
+    key="upload"
+)
 
 if uploaded_file is not None:
     with st.spinner("Processing image and predicting SPAD value..."):
@@ -146,4 +133,4 @@ if uploaded_file is not None:
 
     st.caption("For best results, use clear, well-lit images of single rice leaves.")
 else:
-    st.warning("Please upload or capture a rice leaf image to get a SPAD prediction.")
+    st.warning("Please upload a rice leaf image to get a SPAD prediction.")
